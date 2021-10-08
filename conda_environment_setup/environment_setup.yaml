@@ -4,9 +4,9 @@
 #
 #    conda env create -f conda_environment_setup/environment_setup.yaml
 #    conda env update --file conda_environment_setup/environment_setup.yaml --prune
-#    conda env export --name python_for_finance > envname.yml
-#    conda env remove --name python_for_finance
-#    conda activate python_for_finance
+#    conda env export --name python_automation > envname.yml
+#    conda env remove --name python_automation
+#    conda activate python_automation
 #    conda deactivate
 #    conda env list
 
