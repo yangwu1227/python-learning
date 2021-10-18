@@ -12,6 +12,7 @@
 
 name: python_automation
 channels:
+  - anaconda
   - defaults
   - conda-forge
 dependencies:
@@ -43,6 +44,10 @@ dependencies:
       - ipympl==0.7.0
       - jupytext
       - papermill==2.3.3
+
+      # AWS
+      - boto3==1.18.21
+      - psycopg2==2.8.6
 
       # R Data
       - plydata==0.4.3
