@@ -48,12 +48,18 @@ dependencies:
 
       # AWS
       - boto3==1.18.21
+
+      # SQL
       - psycopg2==2.8.6
+
+      # Python integration 
+      - pypdf2==1.26.0
+      - python-docx==0.8.11
 
       # R Data
       - plydata==0.4.3
       - siuba==0.0.24
-      - datatable
+      - datatable==1.0.0
 
       # Visualization
       - matplotlib==3.3.4
@@ -63,4 +69,4 @@ dependencies:
       - altair==4.1.0
 
       # Environment
-      - nodejs==16.6.1 
+      - nodejs==0.1.1
