@@ -1,4 +1,8 @@
 # ---------------------------------------------------------------------------- #
+#     Note: PyPDF2 is not actively maintained so use 'pikepdf' if possible     #
+# ---------------------------------------------------------------------------- #
+
+# ---------------------------------------------------------------------------- #
 #                                    Imports                                   #
 # ---------------------------------------------------------------------------- #
 
@@ -62,6 +66,25 @@ pdfReader.decrypt('rosebud')
 pdfReader.close()
 
 # ---------------------------------------------------------------------------- #
+#                                  Encrypting                                  #
+# ---------------------------------------------------------------------------- #
+
+# Open and copy
+with open('./watermarkmeeting.pdf', 'rb') as pdfFile:
+    pdfReader = PyPDF2.PdfFileReader(pdfFile)
+    pdfWriter = PyPDF2.PdfFileWriter()
+
+    for page_num in range(pdfReader.numPages):
+        page = pdfReader.getPage(page_num)
+        pdfWriter.addPage(page)
+
+    # Encrypt before writing
+    pdfWriter.encrypt(user_pwd='1234user', owner_pwd='1234owner')
+    with open('./encryptedmeeting.pdf', 'wb') as pdfoutput:
+        pdfWriter.write(pdfoutput)
+
+
+# ---------------------------------------------------------------------------- #
 #                                    Copying                                   #
 # ---------------------------------------------------------------------------- #
 
@@ -80,15 +103,15 @@ pdfWriter = PyPDF2.PdfFileWriter()
 # Copy content from pdf1 and pdf2 to writer object
 for page_num in range(pdf1Reader.numPages):
     # Get the Page object by calling getPage() on a PdfFileReader object
-    page_obj = pdf1Reader.getPage(page_num)
+    page_obj1 = pdf1Reader.getPage(page_num)
     # Call addPage() function on writer object
-    pdfWriter.addPage(page_obj)
+    pdfWriter.addPage(page_obj1)
 
 for page_num in range(pdf2Reader.numPages):
     # Get the Page object by calling getPage() on a PdfFileReader object
-    page_obj = pdf2Reader.getPage(page_num)
+    page_obj2 = pdf2Reader.getPage(page_num)
     # Call addPage() function on writer object
-    pdfWriter.addPage(page_obj)
+    pdfWriter.addPage(page_obj2)
 
 # Now the writer object should have pdf1Reader.numPages + pdf2Reader.numPages pages
 pdfWriter.getNumPages() == pdf1Reader.numPages + pdf2Reader.numPages
@@ -119,7 +142,6 @@ for num1 in range(pdfReader.numPages):
     page1.rotateCounterClockwise(90)
     pdfWriter.addPage(page1)
 
-
 # Open in write-binary
 resultPdfFile = open('rotatedpdf.pdf', 'wb')
 pdfWriter.write(resultPdfFile)
@@ -127,3 +149,101 @@ pdfWriter.write(resultPdfFile)
 # Close files
 pdfFile.close()
 resultPdfFile.close()
+
+# ---------------------------------------------------------------------------- #
+#                                  Overlaying                                  #
+# ---------------------------------------------------------------------------- #
+
+# Open
+pdfFile = open('./meetingminutes.pdf', 'rb')
+pdfReader = PyPDF2.PdfFileReader(pdfFile)
+
+# Watermark reader (only has one page)
+watermarkFile = open('./watermark.pdf', 'rb')
+watermarkpage = PyPDF2.PdfFileReader(watermarkFile).getPage(0)
+
+
+# Writer object
+pdfWriter = PyPDF2.PdfFileWriter()
+
+# Merge watermark onto each page of pdfReader
+for page_num in range(pdfReader.numPages):
+    page = pdfReader.getPage(page_num)
+    page.mergePage(watermarkpage)
+    pdfWriter.addPage(page)
+
+# Open in writing-binary mode
+resultPdfFile = open('watermarkmeeting.pdf', 'wb')
+pdfWriter.write(resultPdfFile)
+
+# Close files
+pdfFile.close()
+watermarkFile.close()
+resultPdfFile.close()
+
+# ---------------------------------------------------------------------------- #
+#                                     Merge                                    #
+# ---------------------------------------------------------------------------- #
+
+# Instantiate PdfFileMerger class
+# The parameter deterines if users should be warned of all problems
+pdfMerger = PyPDF2.PdfFileMerger(strict=True)
+
+# Open pdf files in read-binary mode
+# Opt to not use with for interactive purposes
+pdf1 = open('./watermarkmeeting.pdf', 'rb')
+pdfReader1 = PyPDF2.PdfFileReader(pdf1)
+
+pdf2 = open('./meetingminutes.pdf', 'rb')
+pdfReader2 = PyPDF2.PdfFileReader(pdf2)
+
+pdf3 = open('./combinedminutes.pdf', 'rb')
+pdfReader3 = PyPDF2.PdfFileReader(pdf3)
+
+# Take the first 3 pages of pdf2 and merge it into the merger object as its first 3
+pdfMerger.merge(
+    position=0,
+    fileobj=pdfReader2,
+    bookmark='pdf2',
+    # Using tuple
+    pages=(0, 3)
+)
+# Take all pages from start to end, skipping 2 pages at at time, of pdf1
+pdfMerger.append(
+    fileobj=pdfReader1,
+    bookmark='pdf1',
+    # Use page range
+    pages=PyPDF2.PageRange('::3')
+)
+# Rotate pages in pdf3 by 90 degrees and insert it to the 10th page of the merge object
+
+# Rotate
+rotatedwriter = PyPDF2.PdfFileWriter()
+for page_num in range(pdfReader3.numPages):
+    page = pdfReader3.getPage(page_num).rotateClockwise(90)
+    rotatedwriter.addPage(page)
+
+# Write rotated pdf to disk
+with open('rotate_pdf3.pdf', 'wb') as output:
+    rotatedwriter.write(output)
+
+# Read in new rotated pdf
+pdf3 = open('./rotate_pdf3.pdf', 'rb')
+pdfReader3 = PyPDF2.PdfFileReader(pdf3)
+
+pdfMerger.merge(
+    position=10,
+    fileobj=pdfReader3,
+    bookmark='pdf3rotated',
+    pages=PyPDF2.PageRange(':')
+)
+
+# Write merger object to disk
+mergedpdf = open('mergedall.pdf', 'wb')
+pdfMerger.write(mergedpdf)
+
+# Close files
+pdf1.close()
+pdf2.close()
+pdf3.close()
+mergedpdf.close()
