@@ -77,3 +77,9 @@ dependencies:
       - nodejs==0.1.1
       - pipreqs==0.4.10  
 
+      # Software development
+      - coverage==6.2
+      - pytest==6.2.5
+      - pytest-randomly==3.11.0
+      - pytest-cov==3.0.0
+
