@@ -20,8 +20,8 @@ dependencies:
   - pip
   - pip:
       # Core Data
-      - numpy==1.19.5
-      - pandas==1.3.3
+      - numpy==1.22.2
+      - pandas==1.4.1 
       - pandas_datareader==0.10.0
       - SciPy==1.5.4
       - xlrd==1.2.0
@@ -49,6 +49,7 @@ dependencies:
 
       # AWS
       - boto3==1.18.21
+      - awswrangler==2.14.0
 
       # SQL
       - psycopg2==2.8.6
