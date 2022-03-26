@@ -1,1 +1,1 @@
-Python learning, Python tools, reusable Python code for automating various tasks. 
+Python learning, Python tools, and reusable Python code for automating various tasks. 
