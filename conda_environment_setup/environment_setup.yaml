@@ -9,6 +9,7 @@
 #    conda activate python_automation
 #    conda deactivate
 #    conda env list
+#    conda list python -f
 
 name: python_automation
 channels:
