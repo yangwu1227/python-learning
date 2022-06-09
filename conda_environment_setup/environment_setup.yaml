@@ -69,6 +69,7 @@ dependencies:
       - plydata==0.4.3
       - siuba==0.0.24
       - datatable==1.0.0
+      - patsy
 
       # Visualization
       - matplotlib==3.3.4
