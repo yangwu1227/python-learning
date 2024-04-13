@@ -1,76 +1,121 @@
-# ---------------------------------- Source ---------------------------------- #
-
-# https://www.business-science.io/python/2021/09/21/python-read-csv.html
-
-# ---------------------------------- Library --------------------------------- #
-
 import pandas as pd
 import glob
 import os
+from collections.abc import Sequence
+from typing import List
+from argparse import ArgumentParser, Namespace
 
 # --------------------------------- File path -------------------------------- #
 
-# Current working directory
-os.getcwd()
-# Create relative path
-path = "car_data/"
-# Return a list of paths matching a pathname pattern
-# Similar to R's list.file(pattern)
-list_of_csv = glob.glob(path + "*.csv")
-# Examine
-list_of_csv
+def get_csv_files(path: str) -> List[str]:
+    """
+    Return a list of CSV file paths in the given directory.
+
+    Parameters
+    ----------
+    path : str
+        The directory to search for CSV files.
+
+    Returns
+    -------
+    List[str]
+        A list of paths to CSV files found in the specified directory.
+    """
+    return glob.glob(os.path.join(path, "*.csv"))
 
 # ------------------------ Method 1: Using a for loop ------------------------ #
 
-# Instantiate container list
-container_loop = []
-# For loop
-# Column names inferred from first line of files with header=0
-# Do not specify row labels using index_col=None
-for filename in list_of_csv:
-    df = pd.read_csv(filename, header=0, index_col=None)
-    # Lists are mutable
-    container_loop.append(df)
-# Output
-for df in container_loop:
-    print(df.describe())
-# Examine one data frame
-container_loop[4]
-# Number of data frames
-len(container_loop)
-# Concatenate pandas objects along a particular axis
-# Row-wise concatenation using axis=0
-# Do not use index values along concatenation axis
-df_loop = pd.concat(container_loop, axis=0, ignore_index=True)
-df_loop.describe()
+def method_for_loop(sequence_of_csv: Sequence[str]) -> pd.DataFrame:
+    """
+    Read CSV files using a for loop and concatenate them into a single DataFrame.
+
+    Parameters
+    ----------
+    sequence_of_csv : Sequence[str]
+        A sequence of CSV file paths.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing concatenated data from all CSV files.
+    """
+    container_loop = []
+    for filename in sequence_of_csv:
+        df = pd.read_csv(filename, header=0, index_col=None)
+        container_loop.append(df)
+    return pd.concat(container_loop, axis=0, ignore_index=True)
 
 # ------------------------------- Method 2: Map ------------------------------ #
 
-# Apply given function to each item of a given iterable (list, tuple, etc.)
-# Return a map object which is an iterator
-# An iterator is an object that contains a countable number of elements that can be iterated upon
-map_obj = map(
-    # Anonymous function
-    lambda filename: pd.read_csv(filename, header=0, index_col=None),
-    # Iterable
-    list_of_csv
-)
-# Class
-type(map_obj)
-# Create list of data frames
-container_map = list(map_obj)
-# Row-wise concatenation
-df_map = pd.concat(container_map, axis=0, ignore_index=True)
-df_map.describe()
+def method_map(sequence_of_csv: Sequence[str]) -> pd.DataFrame:
+    """
+    Read CSV files using the map function and concatenate them into a single DataFrame.
+
+    Parameters
+    ----------
+    sequence_of_csv : Sequence[str]
+        A sequence of CSV file paths.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing concatenated data from all CSV files.
+    """
+    map_obj = map(lambda filename: pd.read_csv(filename, header=0, index_col=None), sequence_of_csv)
+    container_map = list(map_obj)
+    return pd.concat(container_map, axis=0, ignore_index=True)
 
 # ----------------------- Method 3: List comprehension ----------------------- #
 
-# List comprehension
-# Basic syntax is [i for i in iterable]
-# Operations can be carried out on the first i
-# We may also add if statements after "iterable"
-container_comp = [pd.read_csv(filename, header=0, index_col=None)
-                  for filename in list_of_csv]
-# Row-wise concatenation
-df_comp = pd.concat(container_comp, axis=0, ignore_index=True)
-df_comp.describe()
+def method_list_comprehension(list_of_csv: List[str]) -> pd.DataFrame:
+    """
+    Read CSV files using list comprehension and concatenate them into a single DataFrame.
+
+    Parameters
+    ----------
+    list_of_csv : Sequence[str]
+        A list of CSV file paths.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing concatenated data from all CSV files.
+    """
+    container_comp = [pd.read_csv(filename, header=0, index_col=None) for filename in list_of_csv]
+    return pd.concat(container_comp, axis=0, ignore_index=True)
+
+# ----------------------------------- Main ----------------------------------- #
+
+def parse_arguments() -> Namespace:
+    """
+    Parse command line arguments to determine the method and path for processing CSV files.
+
+    Returns
+    -------
+    Namespace
+        The parsed arguments with `method` and `path` attributes.
+    """
+    parser = ArgumentParser(description="Process CSV files in different ways.")
+    parser.add_argument("-m", "--method", choices=["loop", "map", "comp"], default="loop",
+                        help="Method to use for processing CSV files (loop, map, or comp)")
+    parser.add_argument("-p", "--path", default="car_data/",
+                        help="Path to the directory containing CSV files")
+    return parser.parse_args()
+
+def main():
+    
+    args = parse_arguments()
+    csv_files = get_csv_files(args.path)
+
+    if args.method == "loop":
+        result = method_for_loop(csv_files)
+    elif args.method == "map":
+        result = method_map(csv_files)
+    else:
+        result = method_list_comprehension(csv_files)
+
+    print(result.describe())
+
+if __name__ == "__main__":
+    
+    main()
