@@ -1,66 +1,63 @@
-# ---------------------------------------------------------------------------- #
-#                                 Documentation                                #
-# ---------------------------------------------------------------------------- #
-
-
-"""
-total(spam, 1, 2, a=3, b=4, _reps=1000) calls and times spam(1, 2, a=3, b=4) _reps times, and returns total time for all runs, with final result.
-bestof(spam, 1, 2, a=3, b=4, _reps=5) runs best-of-N timer to attempt to filter out system load variation, and returns best time among _reps tests.
-bestoftotal(spam, 1, 2, a=3, b=4, _rep1=5, _reps=1000) runs best-of-totals test, which takes the best(min) among _reps1 runs of (_reps runs) each;
-"""
-
-
-# ---------------------------------------------------------------------------- #
-#                                    Modules                                   #
-# ---------------------------------------------------------------------------- #
-
-
+from typing import Callable, Any, Tuple, Dict
+from collections.abc import Sequence
 import time
 import sys
-try:
-    # Or process_time
+
+# Choose the correct timer based on the operating system and Python version
+if hasattr(time, 'perf_counter'):
     timer = time.perf_counter
-except AttributeError:
+else:
     timer = time.clock if sys.platform[:3] == 'win' else time.time
 
-
-# ---------------------------------------------------------------------------- #
-#                               Utility functions                              #
-# ---------------------------------------------------------------------------- #
-
-# All *pargs (tuple) match first N expected args by position
-# The rest must be in **kargs (dictionary) or be omitted defaults
-def total(func, *pargs, _reps=1000, **kargs):
+def total(func: Callable[..., Any], *pargs: Any, _reps: int = 1000, **kargs: Any) -> Tuple[float, Any]:
     """
-    Total time to run func() reps times. Returns (total time, last result).
+    Calculate the total time to run `func` `_reps` times and return the last result.
 
-    Args:
-        func (str): Name of function as a string.
-        _reps (int, optional): Number of times to run the function. Defaults to 1000.
+    Parameters
+    ----------
+    func : Callable[..., Any]
+        The function to time.
+    *pargs : Any
+        Positional arguments to pass to the function.
+    _reps : int, optional
+        The number of repetitions (default is 1000).
+    **kargs : Any
+        Keyword arguments to pass to the function.
 
-    Returns:
-        [tuple]: (total time, last result).
+    Returns
+    -------
+    Tuple[float, Any]
+        A tuple containing the total elapsed time and the last result from `func`.
     """
     start = timer()
+    ret = None
     for i in range(_reps):
         ret = func(*pargs, **kargs)
     elapsed = timer() - start
     return (elapsed, ret)
 
-
-def bestof(func, *pargs, _reps=5, **kargs):
+def bestof(func: Callable[..., Any], *pargs: Any, _reps: int = 5, **kargs: Any) -> Tuple[float, Any]:
     """
-    Quickest func() among reps runs.
+    Determine the minimum execution time of `func` over `_reps` runs.
 
-    Args:
-        func (str): Name of function as a string.
-        _reps (int, optional): Number of times to run the function. Defaults to 5.
+    Parameters
+    ----------
+    func : Callable[..., Any]
+        The function to time.
+    *pargs : Any
+        Positional arguments to pass to the function.
+    _reps : int, optional
+        The number of trials to find the best time (default is 5).
+    **kargs : Any
+        Keyword arguments to pass to the function.
 
-    Returns:
-        [tuple]: (Best time, last result).
+    Returns
+    -------
+    Tuple[float, Any]
+        A tuple containing the best (minimum) time and the result from the last execution of `func`.
     """
-    # Initialize best(minimum) time 136 years (arbitrarily picked)
-    best = 2 ** 32
+    best = float('inf')
+    ret = None
     for i in range(_reps):
         start = timer()
         ret = func(*pargs, **kargs)
@@ -69,27 +66,38 @@ def bestof(func, *pargs, _reps=5, **kargs):
             best = elapsed
     return (best, ret)
 
-
-def bestoftotal(func, *pargs, _reps1=5, **kargs):
+def bestoftotal(func: Callable[..., Any], *pargs: Any, _reps1: int = 5, **kargs: Any) -> Tuple[float, Any]:
     """
-    Best of totals: best of _reps1 runs of _reps (passed to total) runs of func each.
+    Perform a best-of-totals test, which computes the best (minimum) time of `_reps1` runs
+    of the `total` function.
 
-    Args:
-        func (str): Name of function as a string.
-        _reps1 (int, optional): Number of reps to run total(). Defaults to 5.
+    Parameters
+    ----------
+    func : Callable[..., Any]
+        The function to time.
+    *pargs : Any
+        Positional arguments to pass to the function.
+    _reps1 : int, optional
+        The number of times to run the `total` function (default is 5).
+    **kargs : Any
+        Keyword arguments to pass to the function.
 
-    Returns:
-        [tuple]: (Best time among reps1 runs of _reps each, last result).
+    Returns
+    -------
+    Tuple[float, Any]
+        A tuple containing the best time among `_reps1` runs and the result from the last execution of `func`.
     """
-    return min(total(func, *pargs, **kargs) for i in range(_reps1))
-
-
-# ---------------------------------------------------------------------------- #
-#                                Usage mode flag                               #
-# ---------------------------------------------------------------------------- #
-
+    best_time, _ = min((total(func, *pargs, _reps=_reps1, **kargs) for i in range(_reps1)), key=lambda x: x[0])
+    return best_time, _
 
 if __name__ == '__main__':
-    total()
-    bestof()
-    bestoftotal()
+    # Example usage
+    def example_func(x, y):
+        return x + y
+
+    # Call total to sum 1 + 2, 1000 times
+    print(total(example_func, 1, 2))
+    # Find the best time to sum 1 + 2 over 5 trials
+    print(bestof(example_func, 1, 2))
+    # Find the best total time to sum 1 + 2 over 5 sets of 1000 repetitions
+    print(bestoftotal(example_func, 1, 2))
