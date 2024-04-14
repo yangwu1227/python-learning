@@ -5,7 +5,7 @@
 import os
 import json
 import inspect
-from typing import Dict, Any, List, Iterator, Tuple
+from typing import Dict, Any, Tuple
 
 # ---------------------------------------------------------------------------- #
 #                                JSON to Python                                #
@@ -31,12 +31,6 @@ def parse_json(json_string: str) -> Dict[str, Any]:
     and inspect various properties of the resultant dictionary.
     """
     py_dict = json.loads(s=json_string)
-    # Checking if json.loads is a function
-    function_check = inspect.isfunction(json.loads)
-    
-    keys = py_dict.keys()
-    values = py_dict.values()
-    types_of_values = [type(val) for val in py_dict.values()]
     
     return py_dict
 
@@ -69,13 +63,22 @@ def parse_json_from_file(filename: str) -> Dict[str, Any]:
     keys_level1 = list(nested_dict.keys())
     values_level1 = [type(val) for val in nested_dict.values()]
     
+    print(f"Level 1 keys: {keys_level1}")
+    print(f"Level 1 values: {values_level1}")
+    
     nested_level2_keys = [list(val.keys()) for val in nested_dict.values()]
     flat_list_comp = [key for sublist in nested_level2_keys for key in sublist]
     nested_level2_vals = [list(val.values()) for val in nested_dict.values()]
     
+    print(f"Level 2 keys: {flat_list_comp}")
+    print(f"Level 2 values: {nested_level2_vals}")
+    
     # Extracting further nested values and their types
     further_nested_vals = [val for sublist in nested_level2_vals for val in sublist]
     types_of_further_nested_vals = [type(item) for sublist in nested_level2_vals for item in sublist]
+    
+    print(f"Further nested values: {further_nested_vals}")
+    print(f"Types of further nested values: {types_of_further_nested_vals}")
     
     return nested_dict
 
@@ -119,6 +122,7 @@ def main() -> None:
     """
     json_string = '{"name":"John", "age":30, "city":["New York", "Beijing"]}'
     py_dict = parse_json(json_string)
+    print(py_dict)
     
     nested_dict = parse_json_from_file('sample.json')
     
