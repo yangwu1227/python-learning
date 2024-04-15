@@ -98,7 +98,7 @@ def parse_arguments() -> Namespace:
     parser.add_argument("--path", type=str)
     return parser.parse_args()
 
-def main():
+def main() -> int:
     args = parse_arguments()
     csv_path = os.path.join(args.path, "bank-full.csv")
     txt_path = os.path.join(args.path, "bank-full.txt")
@@ -114,6 +114,8 @@ def main():
         df_txt = read_txt_method3(txt_path)
 
     print(df_txt.describe())
+    
+    return 0
 
 if __name__ == "__main__":
     

@@ -102,7 +102,7 @@ def parse_arguments() -> Namespace:
                         help="Path to the directory containing CSV files")
     return parser.parse_args()
 
-def main():
+def main() -> int:
     
     args = parse_arguments()
     csv_files = get_csv_files(args.path)
@@ -115,6 +115,8 @@ def main():
         result = method_list_comprehension(csv_files)
 
     print(result.describe())
+    
+    return 0
 
 if __name__ == "__main__":
     

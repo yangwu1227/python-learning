@@ -116,7 +116,7 @@ def convert_to_json_and_save(py_obj: Dict[str, Any], filename: str, custom_separ
 #                                    Main                                      #
 # ---------------------------------------------------------------------------- #
 
-def main() -> None:
+def main() -> int:
     """
     Main function to handle workflow.
     """
@@ -125,7 +125,6 @@ def main() -> None:
     print(py_dict)
     
     nested_dict = parse_json_from_file('sample.json')
-    
     print(nested_dict)
     
     py_obj = {
@@ -144,6 +143,8 @@ def main() -> None:
         ]
     }
     convert_to_json_and_save(py_obj, 'myinfo_custom_separators.json', ("/ ", " = "))
+    
+    return 0
 
 if __name__ == "__main__":
     

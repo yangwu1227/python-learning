@@ -110,7 +110,7 @@ def save_weather_data(weather_data: Dict[str, Any], filename: str) -> None:
 #                                    Main                                      #
 # ---------------------------------------------------------------------------- #
 
-def main() -> None:
+def main() -> int:
     """
     Main function to handle workflow.
     """
@@ -118,6 +118,8 @@ def main() -> None:
     location = get_location_from_args()
     weather_data = download_weather_data(location, appid)
     save_weather_data(weather_data, 'beijing_weather.json')
+    
+    return 0
 
 if __name__ == "__main__":
     

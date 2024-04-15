@@ -1,5 +1,5 @@
-from typing import Callable, Any, Tuple, Dict
-from collections.abc import Sequence
+from typing import Callable, Any, Tuple
+from functools import lru_cache
 import time
 import sys
 
@@ -90,14 +90,47 @@ def bestoftotal(func: Callable[..., Any], *pargs: Any, _reps1: int = 5, **kargs:
     best_time, _ = min((total(func, *pargs, _reps=_reps1, **kargs) for i in range(_reps1)), key=lambda x: x[0])
     return best_time, _
 
-if __name__ == '__main__':
-    # Example usage
-    def example_func(x, y):
-        return x + y
+@lru_cache(maxsize=None)
+def fibonacci(n: int) -> int:
+    """
+    Calculate the Fibonacci number at position n using a memoized recursive method.
 
-    # Call total to sum 1 + 2, 1000 times
-    print(total(example_func, 1, 2))
-    # Find the best time to sum 1 + 2 over 5 trials
-    print(bestof(example_func, 1, 2))
-    # Find the best total time to sum 1 + 2 over 5 sets of 1000 repetitions
-    print(bestoftotal(example_func, 1, 2))
+    Parameters
+    ----------
+    n : int
+        Index in the Fibonacci sequence.
+
+    Returns
+    -------
+    int
+        Fibonacci number at the given index.
+
+    Examples
+    --------
+    >>> fibonacci(10)
+    55
+    >>> fibonacci(5)
+    5
+    """
+    if n <= 1:
+        return n
+    else:
+        return fibonacci(n-1) + fibonacci(n-2)
+
+def main() -> int:
+    
+    index = 10
+    print(f"The Fibonacci number at index {index} is {fibonacci(index)}")
+
+    # Total time
+    print(total(fibonacci, index))
+    # Find the best time over 5 trials
+    print(bestof(fibonacci, index))
+    # Find the best total time over 5 sets of 1000 repetitions
+    print(bestoftotal(fibonacci, index))
+    
+    return 0
+
+if __name__ == '__main__':
+    
+    main()
