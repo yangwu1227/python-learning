@@ -12,6 +12,13 @@ class Item(BaseModel):
 
 app = FastAPI(title="Request Body")
 
-@app.post("/items/")
-async def create_item(item: Item) -> Item:
-    return item
+@app.post("/items/{item_id}")
+async def create_item(item_id: int, item: Item, q: Union[str, None] = None) -> Dict[str, Union[str, int]]:
+    result = {"item_id": item_id, **item.model_dump()}
+    # If query parameter is given
+    if q:
+        result.update({"q": q})
+    # If tax is specified, update   
+    if result['tax']:
+        result.update({'price_with_tax': result['price'] + result['tax']})
+    return result
