@@ -476,6 +476,10 @@ def main() -> int:
     # True division
     print("v1 / 2:", v1 / 2)
     
+    # Power 
+    print("v1 ** 2:", v1 ** 2)
+    print("9 ** v1:", 9 ** v1)
+    
     # Dot product
     print("v1 @ v2:", v1 @ v2)
     
