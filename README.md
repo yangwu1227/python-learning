@@ -35,11 +35,8 @@ $ pdm install
 To do so with [virtualenv](https://github.com/pypa/virtualenv), use the [pdm venv](https://pdm-project.org/en/latest/reference/cli/#venv) command:
 
 ```bash 
-# List available Python versions 11 through 12
 $ pyenv install --list | grep " 3\.\(10\|11\|12\)\."
-# Install Python 3.11.9
 $ pyenv install 3.11.9
-# Create a virtual environment
 $ pdm venv create --name python_learning --with virtualenv 3.11.9 
 # To activate the virtual environment
 $ eval $(pdm venv activate python_learning) 
