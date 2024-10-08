@@ -1,0 +1,68 @@
+[project]
+name = "python_learning"
+description = "Python learning, tools, and reusable snippets for automating various tasks"
+dependencies = []
+requires-python = ">=3.11"
+readme = "README.md"
+
+[tool.pdm]
+distribution = false
+
+[tool.pdm.dev-dependencies]
+notebook = [
+    "ipykernel>=6.29.5",
+]
+lint_fmt = [
+    "ruff>=0.6.9",
+    "isort>=5.13.2",
+    "mypy>=1.11.2",
+]
+web = [
+    "fastapi>=0.115.0",
+    "requests>=2.32.3",
+    "pydantic>=2.9.2",
+    "uvicorn>=0.31.0",
+    "httpx>=0.27.2",
+    "gunicorn>=23.0.0",
+]
+data = [
+    "pandas[computation,parquet,performance,plot]>=2.2.3",
+    "polars>=1.9.0",
+]
+
+[tool.ruff]
+target-version = "py311"
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
