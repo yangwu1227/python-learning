@@ -24,8 +24,8 @@ To do so with [conda](https://conda.io/projects/conda/en/latest/user-guide/insta
 
 ```bash
 $ conda search python | grep " 3\.\(10\|11\|12\)\."
-$ yes | conda create --name booking_service_api python=3.11.9
-$ conda activate booking_service_api
+$ yes | conda create --name python_learning python=3.11.9
+$ conda activate python_learning
 $ pdm use -f $(which python3)
 $ pdm install
 ```
