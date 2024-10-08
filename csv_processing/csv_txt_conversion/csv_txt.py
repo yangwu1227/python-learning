@@ -1,11 +1,12 @@
 # --------------------- Packages -------------------- #
 
-import pandas as pd
 import os
 from argparse import ArgumentParser, Namespace
-from typing import Tuple
+
+import pandas as pd
 
 # ------------------------- Functions ------------------------ #
+
 
 def read_csv_file(filepath: str, separator: str = ";") -> pd.DataFrame:
     """
@@ -25,6 +26,7 @@ def read_csv_file(filepath: str, separator: str = ";") -> pd.DataFrame:
     """
     return pd.read_csv(filepath, sep=separator, header=0, index_col=None)
 
+
 def export_to_txt(dataframe: pd.DataFrame, filepath: str) -> None:
     """
     Export a DataFrame to a text file, truncating the file first if it exists.
@@ -38,13 +40,15 @@ def export_to_txt(dataframe: pd.DataFrame, filepath: str) -> None:
     filepath : str
         Path where the text file will be saved.
     """
-    with open(file=filepath, mode='w+') as f:
+    with open(file=filepath, mode="w+") as f:
         df_string = dataframe.to_string(header=True, index=False)
         f.write(df_string)
+
 
 def read_txt_method1(filepath: str) -> pd.DataFrame:
     """Read a text file using fixed-width columns."""
     return pd.read_fwf(filepath, colspecs="infer")
+
 
 def read_txt_method2(filepath: str) -> pd.DataFrame:
     """
@@ -61,7 +65,8 @@ def read_txt_method2(filepath: str) -> pd.DataFrame:
     pd.DataFrame
         Data from the text file as a DataFrame.
     """
-    return pd.read_table(filepath, sep=r'\s{1,}')
+    return pd.read_table(filepath, sep=r"\s{1,}")
+
 
 def read_txt_method3(filepath: str) -> pd.DataFrame:
     """
@@ -79,9 +84,11 @@ def read_txt_method3(filepath: str) -> pd.DataFrame:
     pd.DataFrame
         Data from the text file as a DataFrame.
     """
-    return pd.read_csv(filepath, sep=r'\s{1,}')
+    return pd.read_csv(filepath, sep=r"\s{1,}")
+
 
 # ------------------------ Main Program ----------------------- #
+
 
 def parse_arguments() -> Namespace:
     """
@@ -92,17 +99,25 @@ def parse_arguments() -> Namespace:
     Namespace
         The parsed command line arguments.
     """
-    parser = ArgumentParser(description="Process text files using various pandas methods.")
-    parser.add_argument("-m", "--method", choices=["1", "2", "3"], default="1",
-                        help="Method to use for reading text files (1=fwf, 2=table, 3=csv)")
+    parser = ArgumentParser(
+        description="Process text files using various pandas methods."
+    )
+    parser.add_argument(
+        "-m",
+        "--method",
+        choices=["1", "2", "3"],
+        default="1",
+        help="Method to use for reading text files (1=fwf, 2=table, 3=csv)",
+    )
     parser.add_argument("--path", type=str)
     return parser.parse_args()
+
 
 def main() -> int:
     args = parse_arguments()
     csv_path = os.path.join(args.path, "bank-full.csv")
     txt_path = os.path.join(args.path, "bank-full.txt")
-    
+
     df_csv = read_csv_file(csv_path)
     export_to_txt(df_csv, txt_path)
 
@@ -114,9 +129,9 @@ def main() -> int:
         df_txt = read_txt_method3(txt_path)
 
     print(df_txt.describe())
-    
+
     return 0
 
+
 if __name__ == "__main__":
-    
     main()

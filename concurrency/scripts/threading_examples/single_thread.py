@@ -1,11 +1,11 @@
-from time import sleep, perf_counter
+from time import perf_counter, sleep
 
 
 def task(id):
-    print(f'Starting task {id}')
+    print(f"Starting task {id}")
     # Simulate wait
     sleep(1)
-    return f'Finished task {id}'
+    return f"Finished task {id}"
 
 
 # Start the timer

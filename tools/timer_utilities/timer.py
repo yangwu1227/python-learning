@@ -1,15 +1,18 @@
-from typing import Callable, Any, Tuple
-from functools import lru_cache
-import time
 import sys
+import time
+from functools import lru_cache
+from typing import Any, Callable, Tuple
 
 # Choose the correct timer based on the operating system and Python version
-if hasattr(time, 'perf_counter'):
+if hasattr(time, "perf_counter"):
     timer = time.perf_counter
 else:
-    timer = time.clock if sys.platform[:3] == 'win' else time.time
+    timer = time.clock if sys.platform[:3] == "win" else time.time
 
-def total(func: Callable[..., Any], *pargs: Any, _reps: int = 1000, **kargs: Any) -> Tuple[float, Any]:
+
+def total(
+    func: Callable[..., Any], *pargs: Any, _reps: int = 1000, **kargs: Any
+) -> Tuple[float, Any]:
     """
     Calculate the total time to run `func` `_reps` times and return the last result.
 
@@ -36,7 +39,10 @@ def total(func: Callable[..., Any], *pargs: Any, _reps: int = 1000, **kargs: Any
     elapsed = timer() - start
     return (elapsed, ret)
 
-def bestof(func: Callable[..., Any], *pargs: Any, _reps: int = 5, **kargs: Any) -> Tuple[float, Any]:
+
+def bestof(
+    func: Callable[..., Any], *pargs: Any, _reps: int = 5, **kargs: Any
+) -> Tuple[float, Any]:
     """
     Determine the minimum execution time of `func` over `_reps` runs.
 
@@ -56,7 +62,7 @@ def bestof(func: Callable[..., Any], *pargs: Any, _reps: int = 5, **kargs: Any) 
     Tuple[float, Any]
         A tuple containing the best (minimum) time and the result from the last execution of `func`.
     """
-    best = float('inf')
+    best = float("inf")
     ret = None
     for i in range(_reps):
         start = timer()
@@ -66,7 +72,10 @@ def bestof(func: Callable[..., Any], *pargs: Any, _reps: int = 5, **kargs: Any) 
             best = elapsed
     return (best, ret)
 
-def bestoftotal(func: Callable[..., Any], *pargs: Any, _reps1: int = 5, **kargs: Any) -> Tuple[float, Any]:
+
+def bestoftotal(
+    func: Callable[..., Any], *pargs: Any, _reps1: int = 5, **kargs: Any
+) -> Tuple[float, Any]:
     """
     Perform a best-of-totals test, which computes the best (minimum) time of `_reps1` runs
     of the `total` function.
@@ -87,8 +96,12 @@ def bestoftotal(func: Callable[..., Any], *pargs: Any, _reps1: int = 5, **kargs:
     Tuple[float, Any]
         A tuple containing the best time among `_reps1` runs and the result from the last execution of `func`.
     """
-    best_time, _ = min((total(func, *pargs, _reps=_reps1, **kargs) for i in range(_reps1)), key=lambda x: x[0])
+    best_time, _ = min(
+        (total(func, *pargs, _reps=_reps1, **kargs) for i in range(_reps1)),
+        key=lambda x: x[0],
+    )
     return best_time, _
+
 
 @lru_cache(maxsize=None)
 def fibonacci(n: int) -> int:
@@ -115,10 +128,10 @@ def fibonacci(n: int) -> int:
     if n <= 1:
         return n
     else:
-        return fibonacci(n-1) + fibonacci(n-2)
+        return fibonacci(n - 1) + fibonacci(n - 2)
+
 
 def main() -> int:
-    
     index = 10
     print(f"The Fibonacci number at index {index} is {fibonacci(index)}")
 
@@ -128,9 +141,9 @@ def main() -> int:
     print(bestof(fibonacci, index))
     # Find the best total time over 5 sets of 1000 repetitions
     print(bestoftotal(fibonacci, index))
-    
+
     return 0
 
-if __name__ == '__main__':
-    
+
+if __name__ == "__main__":
     main()

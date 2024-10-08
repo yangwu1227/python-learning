@@ -7,6 +7,7 @@ from typing import Tuple
 # Set maximum length of keyword for domains
 MAX_KEYWORD_LEN = 4
 
+
 async def probe(domain: str) -> Tuple[str, bool]:
     """
     Check domains to see if they are available.
@@ -31,8 +32,8 @@ async def probe(domain: str) -> Tuple[str, bool]:
         return (domain, False)
     return (domain, True)
 
+
 async def main() -> None:
-    
     # Generator of keywords and domain names
     names = (key_word for key_word in kwlist if len(key_word) <= MAX_KEYWORD_LEN)
     domains = (f"{name}.dev".lower() for name in names)
@@ -43,12 +44,13 @@ async def main() -> None:
     for coro in asyncio.as_completed(coros):
         # If `coro` raised an unhandled exception, it would be re-raised here
         domain, found = await coro
-        indicator = '+' if found else ' '
+        indicator = "+" if found else " "
         print(f"{indicator} {domain}")
 
+
 if __name__ == "__main__":
-    
     import time
+
     s = time.perf_counter()
     asyncio.run(main())
     elapsed = time.perf_counter() - s

@@ -4,11 +4,11 @@ from threading import Thread
 
 
 def task():
-    print('This is another thread')
+    print("This is another thread")
 
 
 # Protect the entry point of the program
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Define a task to run in a new thread
     thread = Thread(target=task)
     # Start the task in a new thread

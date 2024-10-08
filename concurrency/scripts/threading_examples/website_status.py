@@ -1,9 +1,7 @@
-from urllib.request import urlopen
-from urllib.error import URLError
-from urllib.error import HTTPError
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from http import HTTPStatus
-from concurrent.futures import ThreadPoolExecutor
-from concurrent.futures import as_completed
+from urllib.error import HTTPError, URLError
+from urllib.request import urlopen
 
 # ------------------------ Get the status of a website ----------------------- #
 
@@ -23,13 +21,15 @@ def get_website_status(url):
     except Exception as e:  # Catch all other exceptions
         return e
 
+
 # --------------- Interpret an HTTP response code into a status -------------- #
 
 
 def get_status(code):
     if code == HTTPStatus.OK:
-        return 'OK'
-    return 'ERROR'
+        return "OK"
+    return "ERROR"
+
 
 # -------------------- Check status of a list of websites -------------------- #
 
@@ -38,8 +38,9 @@ def check_status_urls(urls):
     # Create the thread pool with as many workers as there are URLs
     with ThreadPoolExecutor(len(urls)) as executor:
         # Issue each task, map of futures to urls
-        future_to_url = {executor.submit(
-            get_website_status, url): url for url in urls}  # Each key is a future object for a given, which is its value
+        future_to_url = {
+            executor.submit(get_website_status, url): url for url in urls
+        }  # Each key is a future object for a given, which is its value
         # Get results as they are available, since we do not care about order or return values
         for future in as_completed(future_to_url):
             # Get the url for the future
@@ -49,21 +50,23 @@ def check_status_urls(urls):
             # Interpret the status
             status = get_status(code)
             # Report status
-            print(f'{url:20s}\t{status:5s}\t{code}')
+            print(f"{url:20s}\t{status:5s}\t{code}")
 
 
 # Protect the entry point
-if __name__ == '__main__':
+if __name__ == "__main__":
     # list of urls to check
-    urls = ['https://twitter.com',
-            'https://google.com',
-            'https://facebook.com',
-            'https://reddit.com',
-            'https://youtube.com',
-            'https://amazon.com',
-            'https://wikipedia.org',
-            'https://ebay.com',
-            'https://instagram.com',
-            'https://cnn.com']
+    urls = [
+        "https://twitter.com",
+        "https://google.com",
+        "https://facebook.com",
+        "https://reddit.com",
+        "https://youtube.com",
+        "https://amazon.com",
+        "https://wikipedia.org",
+        "https://ebay.com",
+        "https://instagram.com",
+        "https://cnn.com",
+    ]
     # check all urls
     check_status_urls(urls)

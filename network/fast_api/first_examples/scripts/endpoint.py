@@ -1,8 +1,10 @@
-from fastapi import FastAPI
 from typing import Dict
+
+from fastapi import FastAPI
 
 # FastAPI instance
 app = FastAPI(title="First Endpoint")
+
 
 @app.get("/")
 async def first_endpoint() -> Dict[str, str]:

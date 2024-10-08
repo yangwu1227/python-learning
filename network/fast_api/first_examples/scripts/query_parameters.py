@@ -1,10 +1,18 @@
-from typing import Union, Dict
+from typing import Dict, Union
+
 from fastapi import FastAPI
 
 app = FastAPI(title="Multiple Path & Query Parameters")
 
+
 @app.get("/users/{user_id}/items/{item_id}")
-async def read_user_item(user_id: int, item_id: str, needy: str, q: Union[str, None] = None, short: bool = False) -> Dict[str, Union[int, str]]:
+async def read_user_item(
+    user_id: int,
+    item_id: str,
+    needy: str,
+    q: Union[str, None] = None,
+    short: bool = False,
+) -> Dict[str, Union[int, str]]:
     """
     Path operation function to get a user's item.
 
@@ -28,7 +36,7 @@ async def read_user_item(user_id: int, item_id: str, needy: str, q: Union[str, N
     """
     item = {"item_id": item_id, "owner_id": user_id, "needy": needy}
     if q:
-        item.update({'q': q})
+        item.update({"q": q})
     if not short:
-        item.update({'description': "This is a long description"}) 
+        item.update({"description": "This is a long description"})
     return item

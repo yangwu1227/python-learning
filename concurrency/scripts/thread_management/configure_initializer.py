@@ -1,7 +1,7 @@
-from time import sleep
+from concurrent.futures import ThreadPoolExecutor
 from random import random
 from threading import current_thread
-from concurrent.futures import ThreadPoolExecutor
+from time import sleep
 
 # Function for initializing the worker thread
 
@@ -10,7 +10,8 @@ def initializer_worker():
     # get the unique name for this thread
     name = current_thread().name
     # store the unique worker name in a thread local variable
-    print(f'Initializing worker thread {name}')
+    print(f"Initializing worker thread {name}")
+
 
 # A mock task that sleeps for a random amount of time less than one second
 

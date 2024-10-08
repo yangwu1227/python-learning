@@ -2,25 +2,27 @@
 
 import asyncio
 
+
 async def async_count() -> None:
     """
     Asynchronously prints 'One', waits for 1 second, then prints 'Two'.
     """
-    print('One')
+    print("One")
     await asyncio.sleep(1)
-    print('Two')
-    
+    print("Two")
+
+
 async def main() -> None:
     """
     Runs three async_count tasks concurrently.
     """
-    await asyncio.gather(
-        async_count(), async_count(), async_count()
-    )
-    
+    await asyncio.gather(async_count(), async_count(), async_count())
+
+
 if __name__ == "__main__":
-    import time
     import os
+    import time
+
     start_time = time.perf_counter()
     asyncio.run(main())
     elapsed = time.perf_counter() - start_time

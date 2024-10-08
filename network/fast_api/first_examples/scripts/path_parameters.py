@@ -1,13 +1,17 @@
-from enum import Enum 
+from enum import Enum
 from typing import Dict
+
 from fastapi import FastAPI
+
 
 class CountryName(str, Enum):
     usa = "usa"
     japan = "japan"
     china = "china"
-    
+
+
 app = FastAPI(title="Country")
+
 
 @app.get("/country/{country_name}")
 async def get_country(country_name: CountryName) -> Dict[str, str]:

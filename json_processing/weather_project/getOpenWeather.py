@@ -2,14 +2,16 @@
 # getOpenWeather.py - Prints the weather for a location from the command line
 
 import json
-import requests
-import sys
 import os
+import sys
 from typing import Any, Dict
+
+import requests
 
 # ---------------------------------------------------------------------------- #
 #                 API key from https://home.openweathermap.org/                #
 # ---------------------------------------------------------------------------- #
+
 
 def get_api_key() -> str:
     """
@@ -20,11 +22,13 @@ def get_api_key() -> str:
     str
         The API key for the OpenWeatherMap service.
     """
-    return os.environ['APPID']
+    return os.environ["APPID"]
+
 
 # ---------------------------------------------------------------------------- #
 #                 Compute location from command line arguments                 #
 # ---------------------------------------------------------------------------- #
+
 
 def get_location_from_args() -> str:
     """
@@ -50,13 +54,15 @@ def get_location_from_args() -> str:
     and the function would return 'Beijing CN'.
     """
     if len(sys.argv) < 2:
-        print('Usage: getOpenWeather.py city_name, 2-letter_country_code')
+        print("Usage: getOpenWeather.py city_name, 2-letter_country_code")
         sys.exit(1)
-    return ' '.join(sys.argv[1:])
+    return " ".join(sys.argv[1:])
+
 
 # ---------------------------------------------------------------------------- #
 #                              Download JSON data                              #
 # ---------------------------------------------------------------------------- #
+
 
 def download_weather_data(location: str, appid: str) -> Dict[str, Any]:
     """
@@ -79,14 +85,16 @@ def download_weather_data(location: str, appid: str) -> Dict[str, Any]:
     HTTPError
         If an HTTP error occurs during API requests.
     """
-    url = f'https://api.openweathermap.org/data/2.5/weather?q={location}&appid={appid}'
+    url = f"https://api.openweathermap.org/data/2.5/weather?q={location}&appid={appid}"
     response = requests.get(url)
     response.raise_for_status()
     return json.loads(response.text)
 
+
 # ---------------------------------------------------------------------------- #
 #                            Write to disk as .json                            #
 # ---------------------------------------------------------------------------- #
+
 
 def save_weather_data(weather_data: Dict[str, Any], filename: str) -> None:
     """
@@ -103,12 +111,14 @@ def save_weather_data(weather_data: Dict[str, Any], filename: str) -> None:
     -----
     The JSON data is saved in a readable format with sorted keys.
     """
-    with open(filename, 'w', encoding='utf-8') as file:
+    with open(filename, "w", encoding="utf-8") as file:
         json.dump(weather_data, file, indent=4, separators=(", ", ": "), sort_keys=True)
+
 
 # ---------------------------------------------------------------------------- #
 #                                    Main                                      #
 # ---------------------------------------------------------------------------- #
+
 
 def main() -> int:
     """
@@ -117,10 +127,10 @@ def main() -> int:
     appid = get_api_key()
     location = get_location_from_args()
     weather_data = download_weather_data(location, appid)
-    save_weather_data(weather_data, 'beijing_weather.json')
-    
+    save_weather_data(weather_data, "beijing_weather.json")
+
     return 0
 
+
 if __name__ == "__main__":
-    
     main()
