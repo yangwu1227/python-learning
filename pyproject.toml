@@ -28,6 +28,10 @@ web = [
 data = [
     "pandas[computation,parquet,performance,plot]>=2.2.3",
     "polars>=1.9.0",
+    "redis>=5.1.1",
+]
+nlp = [
+    "nltk>=3.9.1",
 ]
 
 [tool.ruff]
