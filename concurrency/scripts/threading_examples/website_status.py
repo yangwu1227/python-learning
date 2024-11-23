@@ -2,11 +2,12 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from http import HTTPStatus
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
+from typing import Union, MutableSequence
 
 # ------------------------ Get the status of a website ----------------------- #
 
 
-def get_website_status(url):
+def get_website_status(url: str) -> Union[int, str, BaseException]:
     # Handle connection errors
     try:
         # Open a connection to the server with a timeout
@@ -25,7 +26,7 @@ def get_website_status(url):
 # --------------- Interpret an HTTP response code into a status -------------- #
 
 
-def get_status(code):
+def get_status(code: Union[BaseException, int, str]) -> str:
     if code == HTTPStatus.OK:
         return "OK"
     return "ERROR"
@@ -34,7 +35,7 @@ def get_status(code):
 # -------------------- Check status of a list of websites -------------------- #
 
 
-def check_status_urls(urls):
+def check_status_urls(urls: MutableSequence[str]) -> None:
     # Create the thread pool with as many workers as there are URLs
     with ThreadPoolExecutor(len(urls)) as executor:
         # Issue each task, map of futures to urls

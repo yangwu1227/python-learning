@@ -56,7 +56,7 @@ def count_words(filename: str) -> None:
         The name of the file to process.
     """
 
-    word_counter = Counter()
+    word_counter: Counter = Counter()
     data_file = data_path / filename
     with open(data_file, "r") as file:
         for line in file:

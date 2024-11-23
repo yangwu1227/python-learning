@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 from urllib.request import urlopen
 
 
-def download_image(url):
+def download_image(url: str) -> None:
     image_data = None
     # Note that urlopen returns a bytes object
     with urlopen(url) as f:
@@ -23,7 +23,7 @@ def download_image(url):
         print(f"{filename} was downloaded successfully")
 
 
-if __name__ == "__main__":
+def main() -> int:
     start = time.perf_counter()
 
     urls = [
@@ -54,4 +54,10 @@ if __name__ == "__main__":
 
     finish = time.perf_counter()
 
-    print(f"It took {finish-start} second(s) to finish.")
+    print(f"It took {finish-start} second(s) to finish")
+
+    return 0
+
+
+if __name__ == "__main__":
+    main()

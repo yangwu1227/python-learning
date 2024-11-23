@@ -1,7 +1,7 @@
 from time import perf_counter, sleep
 
 
-def task(id):
+def task(id) -> str:
     print(f"Starting task {id}")
     # Simulate wait
     sleep(1)

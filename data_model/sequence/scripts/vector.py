@@ -64,7 +64,7 @@ class Vector(object):
         Vector([1.0, 2.0, 3.0])
         """
         typecode = chr(octets[0])
-        memv = memoryview(octets[1:]).cast(typecode)
+        memv = memoryview(octets[1:]).cast(typecode)  # type: ignore[call-overload]
         # Passed to __init__ as components
         return cls(memv)
 
@@ -158,7 +158,7 @@ class Vector(object):
 
     # ------------------------------ Infix operators ----------------------------- #
 
-    def __add__(self, other: Any) -> "Vector":
+    def __add__(self, other: Any) -> Self:
         """
         Add two vectors element-wise. If the two vectors have different lengths, the `zip_longest`
         function will fill the shorter vector with 0.0 values to match the length of the longer vector.
@@ -173,13 +173,14 @@ class Vector(object):
         Vector
             A new instance of the class
         """
+        cls = self.__class__
         try:
             pairs = zip_longest(self, other, fillvalue=0.0)
-            return Vector(vec_el_a + vec_el_b for vec_el_a, vec_el_b in pairs)
+            return cls(vec_el_a + vec_el_b for vec_el_a, vec_el_b in pairs)
         except TypeError:
             return NotImplemented
 
-    def __sub__(self, other: Any) -> "Vector":
+    def __sub__(self, other: Any) -> Self:
         """
         Subtract two vectors element-wise. If the two vectors have different lengths, the `zip_longest`
         function will fill the shorter vector with 0.0 values to match the length of the longer vector.
@@ -194,13 +195,14 @@ class Vector(object):
         Vector
             A new instance of the class
         """
+        cls = self.__class__
         try:
             pairs = zip_longest(self, other, fillvalue=0.0)
-            return Vector(vec_el_a - vec_el_b for vec_el_a, vec_el_b in pairs)
+            return cls(vec_el_a - vec_el_b for vec_el_a, vec_el_b in pairs)
         except TypeError:
             return NotImplemented
 
-    def __pow__(self, exponent: Union[int, float]) -> "Vector":
+    def __pow__(self, exponent: Union[int, float]) -> Self:
         """
         Compute the power of a vector element-wise.
 
@@ -214,12 +216,12 @@ class Vector(object):
         Vector
             A new instance of the class
         """
+        cls = self.__class__
         if isinstance(exponent, (int, float)):
-            return Vector(pow(vector_element, exponent) for vector_element in self)
-        else:
-            return NotImplemented
+            return cls(pow(vector_element, exponent) for vector_element in self)
+        return NotImplemented  # type: ignore[unreachable]
 
-    def __mul__(self, scalar: Union[float, int, bool, Fraction]) -> "Vector":
+    def __mul__(self, scalar: Union[float, int, bool, Fraction]) -> Self:
         """
         Element-wise multiplication of a vector by a scalar.
 
@@ -233,19 +235,19 @@ class Vector(object):
         Vector
             A new instance of the class
         """
+        cls = self.__class__
         # If scalar cannot be converted to float, not implemented
         try:
             factor = float(scalar)
         except TypeError:
             # Python will try other.__mul__(Vector), which returns TypeError
             return NotImplemented
-        return Vector(vector_element * factor for vector_element in self)
+        return cls(vector_element * factor for vector_element in self)
 
     def __truediv__(
         self,
-        other: Union[float, int, bool, Fraction, "Vector"],
-        floor_division: bool = False,
-    ) -> "Vector":
+        other: Union[float, int, bool, Fraction, Self],
+    ) -> Self:
         """
         Element-wise division of a vector by a scalar or another vector.
         If `other` is a vector and vectors have different lengths, the shorter one is padded with ones.
@@ -254,31 +256,26 @@ class Vector(object):
         ----------
         other : Union[float, int, bool, Fraction, Vector]
             A scalar or another vector to divide by
-        floor_division : bool
-            If True, perform floor division, otherwise perform true division
 
         Returns
         -------
         Vector
             A new instance of the class with each element divided by the corresponding element of `other` or by `other` if it is a scalar
         """
+        cls = self.__class__
         if isinstance(other, Vector):
             pairs = zip_longest(
                 self, other, fillvalue=1.0
             )  # Fill with 1.0 to avoid division by zero
-            div_func = floordiv if floor_division else truediv
-            return Vector(div_func(vec_el_a, vec_el_b) for vec_el_a, vec_el_b in pairs)
+            return cls(truediv(vec_el_a, vec_el_b) for vec_el_a, vec_el_b in pairs)
         else:
             try:
                 factor = float(other)
             except TypeError:
                 return NotImplemented
-            div_func = floordiv if floor_division else truediv
-            return Vector(div_func(vector_element, factor) for vector_element in self)
+            return cls(truediv(vector_element, factor) for vector_element in self)
 
-    def __floordiv__(
-        self, other: Union[float, int, bool, Fraction, "Vector"]
-    ) -> "Vector":
+    def __floordiv__(self, other: Union[float, int, bool, Fraction, Self]) -> Self:
         """
         Element-wise floor division of a vector by a scalar or another vector.
         If `other` is a vector and vectors have different lengths, the shorter one is padded with ones.
@@ -293,7 +290,18 @@ class Vector(object):
         Vector
             A new instance of the class with each element floor-divided by the corresponding element of `other` or by `other` if it is a scalar
         """
-        return self.__truediv__(other, floor_division=True)
+        cls = self.__class__
+        if isinstance(other, Vector):
+            pairs = zip_longest(
+                self, other, fillvalue=1.0
+            )  # Fill with 1.0 to avoid division by zero
+            return cls(floordiv(vec_el_a, vec_el_b) for vec_el_a, vec_el_b in pairs)
+        else:
+            try:
+                factor = float(other)
+            except TypeError:
+                return NotImplemented
+            return cls(floordiv(vector_element, factor) for vector_element in self)
 
     def __matmul__(self, other: Any) -> float:
         """
@@ -342,9 +350,9 @@ class Vector(object):
 
     def _cmp(
         self,
-        other: Union[float, int, bool, Fraction, "Vector"],
+        other: Union[float, int, bool, Fraction, Self],
         comparison_operator: str,
-    ) -> "Vector":
+    ) -> Self:
         """
         Element-wise comparison of a vector with a scalar or another vector. If the other operand is a vector
         the two vectors must have the same length. If the other operand is a scalar, the comparison is done
@@ -362,6 +370,7 @@ class Vector(object):
         Vector
             A new instance of the class with the result of the comparison, with values 1.0 for True and 0.0 for False
         """
+        cls = self.__class__
         match comparison_operator:
             case "gt":
                 cmp = gt
@@ -392,18 +401,18 @@ class Vector(object):
             except TypeError:
                 return NotImplemented
             comparisons = (cmp(vector_element, other) for vector_element in self)
-        return Vector(comparisons)
+        return cls(comparisons)
 
-    def __gt__(self, other: Union[float, int, bool, Fraction, "Vector"]) -> "Vector":
+    def __gt__(self, other: Union[float, int, bool, Fraction, Self]) -> Self:
         return self._cmp(other, "gt")
 
-    def __lt__(self, other: Union[float, int, bool, Fraction, "Vector"]) -> "Vector":
+    def __lt__(self, other: Union[float, int, bool, Fraction, Self]) -> Self:
         return self._cmp(other, "lt")
 
-    def __ge__(self, other: Union[float, int, bool, Fraction, "Vector"]) -> "Vector":
+    def __ge__(self, other: Union[float, int, bool, Fraction, Self]) -> Self:
         return self._cmp(other, "ge")
 
-    def __le__(self, other: Union[float, int, bool, Fraction, "Vector"]) -> "Vector":
+    def __le__(self, other: Union[float, int, bool, Fraction, Self]) -> Self:
         return self._cmp(other, "le")
 
     # ----------------------------- Sequence protocol ---------------------------- #

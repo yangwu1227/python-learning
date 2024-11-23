@@ -1,8 +1,9 @@
 import os
 from datetime import datetime
+from typing import Tuple
 
 
-def hash_it(x):
+def hash_it(x) -> Tuple[int, str, str]:
     # Get the current time to log when the hash is calculated
     current_time = datetime.now().strftime("%H:%M:%S.%f")
     # Retrieve the PYTHONHASHSEED environment variable if set
@@ -11,7 +12,7 @@ def hash_it(x):
     return (hash(x), current_time, hash_seed)
 
 
-def main():
+def main() -> int:
     now_datetime = datetime.now()
     string = "Yang Wu"
     bytes_string = b"Yang Wu"

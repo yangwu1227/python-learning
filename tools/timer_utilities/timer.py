@@ -7,7 +7,7 @@ from typing import Any, Callable, Tuple
 if hasattr(time, "perf_counter"):
     timer = time.perf_counter
 else:
-    timer = time.clock if sys.platform[:3] == "win" else time.time
+    timer = time.perf_counter if sys.platform[:3] == "win" else time.time
 
 
 def total(

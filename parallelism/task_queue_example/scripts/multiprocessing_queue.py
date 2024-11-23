@@ -12,7 +12,7 @@ data_path = project_path / "data"
 def main() -> int:
     books = list(path.name for path in data_path.rglob("*.txt"))
     # Infinite size queue
-    queue = Queue(maxsize=-1)
+    queue: Queue = Queue(maxsize=-1)
 
     logger.info(f"Enqueuing {len(books)} books")
     for book in books:

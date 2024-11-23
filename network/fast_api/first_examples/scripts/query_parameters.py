@@ -1,4 +1,4 @@
-from typing import Dict, Union
+from typing import Dict, Union, Optional
 
 from fastapi import FastAPI
 
@@ -10,9 +10,9 @@ async def read_user_item(
     user_id: int,
     item_id: str,
     needy: str,
-    q: Union[str, None] = None,
-    short: bool = False,
-) -> Dict[str, Union[int, str]]:
+    q: Optional[str] = None,
+    short: Optional[bool] = False,
+) -> Dict[str, Union[int, str, object]]:
     """
     Path operation function to get a user's item.
 
@@ -24,14 +24,14 @@ async def read_user_item(
         Path parameter
     needy : str
         This is a required query parameter
-    q : Union[str, None], optional
+    q : Optional[str]
         Query parameter, by default None
-    short : bool, optional
+    short : Optional[bool]
         Query parameter, by default False
 
     Returns
     -------
-    Dict[str, Union[int, str]]
+    Dict[str, Union[int, str, object]]
         A dictionary containing the user_id, item_id, and the needy query parameter
     """
     item = {"item_id": item_id, "owner_id": user_id, "needy": needy}

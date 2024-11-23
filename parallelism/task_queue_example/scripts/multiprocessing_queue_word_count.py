@@ -103,7 +103,7 @@ def main() -> int:
     # Get all books
     books = list(path.name for path in data_path.rglob("*.txt"))
     # Infinite size queue
-    task_queue = Queue()
+    task_queue: Queue = Queue()
     task_queue = enque(task_queue, books, logger)
 
     processes = []
