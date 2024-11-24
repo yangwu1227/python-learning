@@ -1,14 +1,13 @@
 import logging
-from multiprocessing import Queue, Process, cpu_count, get_logger
-from queue import Empty
-import logging
-from pathlib import Path
 import os
-from typing import List
 import time
+from multiprocessing import Process, Queue, cpu_count, get_logger
+from pathlib import Path
+from queue import Empty
+from typing import List
 
-from word_count_task import count_words
 from utils import setup_logger
+from word_count_task import count_words
 
 num_processes = cpu_count() - 1
 book_multipler = 10

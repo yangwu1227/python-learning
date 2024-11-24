@@ -1,6 +1,6 @@
 import pickle
 import uuid
-from typing import Callable, Tuple, Any
+from typing import Any, Callable, Tuple
 
 
 class SimpleTask(object):

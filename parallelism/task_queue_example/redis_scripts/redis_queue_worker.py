@@ -1,5 +1,4 @@
 import redis
-
 from redis_queue import SimpleQueue
 from utils import setup_logger
 

@@ -1,13 +1,12 @@
-from collections import Counter
 import json
 import os
 import sys
 import uuid
+from collections import Counter
 from pathlib import Path
 
 import nltk
 from nltk.corpus import stopwords
-
 from utils import setup_logger
 
 try:

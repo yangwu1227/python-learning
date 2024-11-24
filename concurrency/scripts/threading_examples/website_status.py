@@ -1,8 +1,8 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from http import HTTPStatus
+from typing import MutableSequence, Union
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
-from typing import Union, MutableSequence
 
 # ------------------------ Get the status of a website ----------------------- #
 

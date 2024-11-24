@@ -1,9 +1,9 @@
-from multiprocessing import Pool, cpu_count
 import time
+from multiprocessing import Pool, cpu_count
 from pathlib import Path
 
-from word_count_task import count_words
 from utils import setup_logger
+from word_count_task import count_words
 
 num_processes = cpu_count() - 1
 logger = setup_logger("multiprocessing_pool")

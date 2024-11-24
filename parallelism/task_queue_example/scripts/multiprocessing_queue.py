@@ -1,6 +1,6 @@
 from multiprocessing import Queue
-from queue import Empty
 from pathlib import Path
+from queue import Empty
 
 from utils import setup_logger
 

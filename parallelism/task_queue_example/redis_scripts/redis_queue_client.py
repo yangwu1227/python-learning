@@ -1,9 +1,9 @@
-import redis
 from pathlib import Path
 
+import redis
 from redis_queue import SimpleQueue
-from word_count_task import count_words
 from utils import setup_logger
+from word_count_task import count_words
 
 book_multipler = 10
 project_path = Path(__file__).resolve().parents[1]
