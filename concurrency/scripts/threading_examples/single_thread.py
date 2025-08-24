@@ -16,4 +16,4 @@ for i in range(4):
 
 finish = perf_counter()
 
-print(f"It took {finish-start} second(s) to finish.")
+print(f"It took {finish - start} second(s) to finish.")

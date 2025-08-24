@@ -21,4 +21,4 @@ if __name__ == "__main__":
 
     finish = perf_counter()
 
-    print(f"It took {finish-start} second(s) to finish.")
+    print(f"It took {finish - start} second(s) to finish.")
