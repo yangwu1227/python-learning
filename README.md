@@ -30,7 +30,7 @@ $ pdm use -f $(which python3)
 $ pdm install
 ```
 
-#### Vitualenv
+#### Virtualenv
 
 To do so with [virtualenv](https://github.com/pypa/virtualenv), use the [pdm venv](https://pdm-project.org/en/latest/reference/cli/#venv) command:
 
@@ -41,4 +41,11 @@ $ pdm venv create --name python_learning --with virtualenv 3.11.9
 # To activate the virtual environment
 $ eval $(pdm venv activate python_learning) 
 $ pdm install
+```
+
+Use `--with venv` to create the virtual environment using `venv` (comes with standard library) instead of `virtualenv` (third-party package but more performant). To create the venv in the project root instead of `pdm config venv.location`, omit the `--name` option:
+
+```bash
+$ pdm config venv.in_project true
+$ pdm venv create --with venv 3.11.9
 ```
