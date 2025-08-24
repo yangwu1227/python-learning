@@ -54,7 +54,7 @@ def main() -> int:
 
     finish = time.perf_counter()
 
-    print(f"It took {finish-start} second(s) to finish")
+    print(f"It took {finish - start} second(s) to finish")
 
     return 0
 
